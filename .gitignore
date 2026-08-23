@@ -6,7 +6,8 @@ TASKS.md
 docs/
 
 # --- Veri ve çıktılar (repoya girmez) ---
-/data/          # kök dizindeki veri seti (src/data paketini etkilemesin diye / ile sabit)
+# Not: başında / var → sadece kök dizini eşler, src/data paketini etkilemez.
+/data/
 /outputs/
 *.pt
 *.pth
