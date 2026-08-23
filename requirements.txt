@@ -4,8 +4,8 @@ torchvision>=0.15
 segmentation-models-pytorch>=0.3.3
 
 # --- Veri / görüntü işleme ---
-numpy>=1.24
-opencv-python>=4.8
+numpy>=1.24,<2        # torch 2.2.2 (Intel Mac son x86 wheel'i) NumPy 2 ile uyumsuz
+opencv-python>=4.8,<5     # opencv 5.x numpy>=2 istiyor; torch ile uyum için 4.x
 Pillow>=10.0
 pandas>=2.0            # LARD köşe etiketleri CSV formatında
 albumentations>=1.3    # augmentation (hflip, brightness/contrast, hafif rotation)

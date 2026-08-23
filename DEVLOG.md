@@ -43,4 +43,6 @@ Hiperparametreler config'te (koda gömülü değil), seed sabit.
 **Tuzak:** `.gitignore`'daki `data/` deseni `src/data` paketini de eziyordu →
 `/data/` diye sabitledim. `docs/` (case study PDF) public repoya girmesin diye ignore'landı.
 
-**Açık kalan:** lokal venv + `pip install` henüz koşulmadı.
+**Takılma → çözüm:** venv kurulumunda torch (Intel Mac'in son x86 wheel'i, 2.2.2) NumPy 2
+ile kırıldı; opencv 5.x ise NumPy 2 istiyor. Zincir: `numpy<2` + `opencv-python<5` pinledim.
+Çalışan set: torch 2.2.2 (CPU) · numpy 1.26.4 · opencv 4.11 · smp 0.5. Tüm importlar ✓.
