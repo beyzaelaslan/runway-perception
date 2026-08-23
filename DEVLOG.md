@@ -64,3 +64,26 @@ tüm seti indirmeden çekebiliyoruz (yüz MB'lar). Köşe koordinatı + zengin m
 muhtemelen gerçek görüntü yok. "Gerçek görüntüyle domain gap testi" hedefini,
 "domain gap'i kavramsal + metadata üzerinden dürüstçe tartışma"ya çeviriyoruz. Gerekirse
 sonradan V1'in 5 GB'lık gerçek test setini ekleyebiliriz.
+
+---
+
+## 2026-08-23 · Faz 1: veri katmanı tamam  ⚠️ TASLAK (Beyza gözden geçirecek)
+
+**Ne yaptım:** 800 görüntü indirildi (5 kaynaktan 160'ar), köşe→maske dönüşümü, PyTorch
+Dataset, augmentation ve scenario bazlı split yazıldı. Overlay ile gözle doğrulandı.
+
+**Takılma → çözüm:** İlk `download_lard.py` HF **streaming** kullanıyordu; bağlantı büyük
+parquet shard'larını tamponlarken sürekli düşüyordu (`peer closed connection`), çok yavaştı.
+`hf_hub_download` ile shard'ı doğrudan indirmeye geçtim (resumable + cache'li). Bir shard
+~1733 satır → config başına tek shard yetti, 5 shard toplam.
+
+**İki dürüst bulgu (TESTING'e taşınacak):**
+1. **Sadece ~20 benzersiz scenario/airport** → rastgele split sızıntı yapardı. Bu yüzden
+   scenario bazlı (gruplu) split (`split.py`, GroupShuffleSplit, seed=42). Sonuç
+   train 459 / val 226 / test 115, sızıntı 0. Ödün: oran tam 70/15/15 değil, test az
+   havaalanı kapsıyor.
+2. **Pist piksel oranı ~%0.17** (uzak yaklaşmada pist minik) → aşırı sınıf dengesizliği.
+   Bu, **Dice+BCE combo loss** kararımızı doğruluyor (Dice dengesizliğe dayanıklı).
+
+**Sonuç:** Veri katmanı hazır. Sıradaki: Faz 2 (feature extraction) — eğitimden önce,
+dummy maske ile test edilebilir.
