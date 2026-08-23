@@ -87,3 +87,35 @@ parquet shard'larını tamponlarken sürekli düşüyordu (`peer closed connecti
 
 **Sonuç:** Veri katmanı hazır. Sıradaki: Faz 2 (feature extraction) — eğitimden önce,
 dummy maske ile test edilebilir.
+
+---
+
+## 2026-08-23 · Faz 2: feature extraction  ⚠️ TASLAK (Beyza gözden geçirecek)
+
+**Ne yaptım:** Modelden bağımsız geometri modülü (`geometry.py`) + görselleştirme
+(`visualize.py`) + 8 birim test. Girdi binary maske, çıktı 4 özellik.
+
+**Neden bu özellikler (iniş kararı bağlamı):**
+- **Pist sınırları (4 köşe):** pistin görüntüdeki konumu/kapsamı.
+- **Merkez hattı + yaklaşma açısı:** uçağın piste **hizalanması** — karar destekli inişin
+  en kritik göstergesi (dikeyden sapma = yanlış hizalama).
+- **Threshold kenarı:** pistin kameraya en yakın ucu → **mesafe/iniş noktası** sezgisi.
+
+**Kritik karar — merkez hattı yöntemi değişti:**
+İlk yöntem minAreaRect'in kısa kenar orta noktalarıydı. Test edince gördüm ki **çok yakın
+mesafede kırılıyor**: pist enine boyundan geniş olunca "uzun eksen" yatay seçiliyordu
+(yakın rejimde medyan |açı| 86.5°, olması gereken ~0). Bunun yerine **her görüntü satırının
+maske orta noktalarına doğru fit** ettim (down-range eksen ~dikey varsayımı). Sonuç:
+yakın medyan |açı| 86.5° → **12.2°**, yatay hata 92 → **0**. Orta/uzak rejim de iyileşti.
+
+**Değerlendirdiğim alternatifler:** minAreaRect kısa-kenar (elendi, yakında kırılıyor);
+PCA principal axis (aynı en-boy sorununa açık); satır-bazlı fit (seçildi).
+
+**Ne çalışmadı / dürüst sınır:** Uzak rejimde (slant>3) pist minik (birkaç piksel) →
+geometri hâlâ gürültülü (medyan |açı| 34°). Bu, %0.17 pist oranı bulgusuyla tutarlı,
+bir model sınırı değil veri/çözünürlük sınırı. TESTING'e taşınacak.
+
+**Doğrulama:** Sentetik (dikey→0°, boş→graceful) + gerçek GT maske üzerinde gözle overlay
+(outputs/data_check/features_montage.png) + 8/8 pytest.
+
+**Sonuç:** Feature katmanı hazır ve model olmadan çalışıyor. Sıradaki: Faz 3 eğitim altyapısı.
