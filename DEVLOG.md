@@ -119,3 +119,35 @@ bir model sınırı değil veri/çözünürlük sınırı. TESTING'e taşınacak
 (outputs/data_check/features_montage.png) + 8/8 pytest.
 
 **Sonuç:** Feature katmanı hazır ve model olmadan çalışıyor. Sıradaki: Faz 3 eğitim altyapısı.
+
+---
+
+## 2026-08-23 · Faz 3: eğitim altyapısı  ⚠️ TASLAK (Beyza gözden geçirecek)
+
+**Ne yaptım:** Model factory, Dice+BCE loss, metrikler (IoU/Dice/precision/recall/F1),
+config'ten okuyan tekrar üretilebilir train loop, Colab notebook. CPU'da smoke test
+(1 epoch/2 batch) uçtan uca geçti: loss iniyor, checkpoint + history kaydediliyor.
+
+**Model seçim gerekçesi — U-Net + ResNet34 (ImageNet pretrained):**
+- **Pretrained encoder şart:** 800 görüntü az; sıfırdan eğitim yakınsamaz. ImageNet
+  ön-eğitimli ResNet34 düşük seviyeli özellikleri (kenar/doku) hazır getiriyor.
+- **U-Net:** skip-connection'lar ince yapıları (pist kenarı, uzak/ince pist) korur;
+  binary segmentasyonda hızlı yakınsar.
+- **ResNet34:** hafif → Colab ücretsiz GPU'da makul sürede eğitilir (ResNet50+ gereksiz ağır).
+
+**Değerlendirdiğim alternatifler:**
+- **DeepLabv3+:** güçlü ama daha ağır; bu veri boyutunda ekstra kapasite overfit riski,
+  Colab'da yavaş. smp ile arch değiştirmek tek satır (`factory.py`), gerekirse denenebilir.
+- **SegFormer / transformer:** daha çok veri ister; 800 görüntüde avantajını gösteremez.
+- **Klasik CV eşikleme (baseline):** pist rengi/kontrastı sahneye göre çok değişken
+  (çim, asfalt, alacakaranlık) → kırılgan. Yine de feature extraction'ı zaten model-bağımsız
+  yazdık; kötü durumda geometri katmanı klasik CV maskesiyle de beslenebilir.
+
+**Metrik gerekçesi (neden accuracy değil):** Pist görüntünün ~%0.17'si; her şeyi arka plan
+diyen model %99+ accuracy alır ama işe yaramaz. IoU/Dice örtüşmeyi ölçer, bu tuzağa düşmez.
+Precision/recall hata tipini ayırır (taxiway'i pist sanma vs pisti kaçırma) → failure analizi.
+
+**Ortam ayrımı:** Kod lokalde (CPU) yazılıp doğrulandı; asıl eğitim `notebooks/train_colab.ipynb`
+ile Colab GPU'da koşacak. Lokalde tam epoch ~10+ dk (CPU) → GPU şart olduğunu doğruladı.
+
+**Sonuç:** Altyapı hazır. **Manuel adım (Beyza):** notebook'u Colab'da koş, `best.pt` indir.
