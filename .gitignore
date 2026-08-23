@@ -1,0 +1,30 @@
+# --- Proje takip dosyaları (teslimata dahil DEĞİL) ---
+CLAUDE.md
+TASKS.md
+
+# --- Case study dokümanı (TUSAŞ iç belgesi — public repoya girmez) ---
+docs/
+
+# --- Veri ve çıktılar (repoya girmez) ---
+/data/          # kök dizindeki veri seti (src/data paketini etkilemesin diye / ile sabit)
+/outputs/
+*.pt
+*.pth
+*.ckpt
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# --- Ortam ---
+.venv/
+venv/
+env/
+
+# --- OS / IDE ---
+.DS_Store
+.vscode/
+.idea/

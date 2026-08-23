@@ -1,0 +1,52 @@
+# ============================================================
+# U-Net + ResNet34 eğitim konfigürasyonu
+# Tüm hiperparametreler burada tutulur, koda GÖMÜLMEZ (CLAUDE.md kuralı).
+# ============================================================
+
+# --- Tekrar üretilebilirlik ---
+seed: 42                     # torch / numpy / random hepsi bu seed ile sabitlenir
+
+# --- Veri ---
+data:
+  dataset: LARD             # seçilen veri seti (bkz. DEVLOG 2026-08-23)
+  version: v1               # V1 subset (~800 görüntü)
+  root: data/lard           # subset'in indirileceği lokal yol (gitignore'da)
+  image_size: 384           # 384x384 → küçük veri + Colab ücretsiz GPU için makul
+  val_split: 0.15
+  test_split: 0.15
+  num_workers: 2
+
+# --- Model ---
+model:
+  arch: Unet                # segmentation_models_pytorch mimarisi
+  encoder_name: resnet34    # ImageNet pretrained encoder (küçük veri seti için şart)
+  encoder_weights: imagenet
+  in_channels: 3
+  classes: 1                # binary segmentasyon (pist / arka plan)
+
+# --- Eğitim ---
+train:
+  epochs: 25
+  batch_size: 8             # Colab GPU belleğine göre 8-16 arası ayarlanabilir
+  optimizer: AdamW
+  lr: 0.0003
+  weight_decay: 0.0001
+  scheduler: cosine         # cosine annealing
+  # Loss = Dice + BCE combo (bkz. src/training/losses.py)
+  loss:
+    dice_weight: 0.5
+    bce_weight: 0.5
+  amp: true                 # mixed precision (GPU'da hız/bellek)
+
+# --- Augmentation ---
+# Pist geometrisi bozulmasın diye rotation dar tutuldu.
+augmentation:
+  horizontal_flip: 0.5
+  brightness_contrast: 0.3
+  rotate_limit: 7           # derece; hafif
+
+# --- Checkpoint / çıktı ---
+output:
+  dir: outputs
+  best_name: best.pt
+  save_last: true
