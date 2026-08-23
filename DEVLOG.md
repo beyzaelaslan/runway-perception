@@ -46,3 +46,21 @@ Hiperparametreler config'te (koda gömülü değil), seed sabit.
 **Takılma → çözüm:** venv kurulumunda torch (Intel Mac'in son x86 wheel'i, 2.2.2) NumPy 2
 ile kırıldı; opencv 5.x ise NumPy 2 istiyor. Zincir: `numpy<2` + `opencv-python<5` pinledim.
 Çalışan set: torch 2.2.2 (CPU) · numpy 1.26.4 · opencv 4.11 · smp 0.5. Tüm importlar ✓.
+
+---
+
+## 2026-08-23 · Karar revizyonu: LARD V1 → V2 (indirme lojistiği)  `[Claude önerisi — onaylandı]`
+
+İndirme yolunu araştırınca **"V1 daha küçük" varsayımım yanlış çıktı:** V1 (data.gouv.fr)
+sentetik train'i 3.5–7.2 GB'lık zip'lere bölmüş (toplam ~35 GB), gerçek görüntüler ayrı 5 GB.
+~800 görüntü için bile min 3.5 GB indirmek gerekiyor.
+
+**Revize karar:** V2 (HuggingFace, `DEEL-AI/LARD_V2`) — Parquet + streaming ile ~800 örneği
+tüm seti indirmeden çekebiliyoruz (yüz MB'lar). Köşe koordinatı + zengin metadata
+(slant_distance, height_above_runway, lateral_path_angle) var → failure analizinde
+"uzak mesafe / alçak açı" örüntülerini nesnel ayırmak için avantaj.
+
+**Kabul edilen ödün:** V2'nin kaynakları sentetik (arcgis/bingmaps/ges/xplane/flsim) →
+muhtemelen gerçek görüntü yok. "Gerçek görüntüyle domain gap testi" hedefini,
+"domain gap'i kavramsal + metadata üzerinden dürüstçe tartışma"ya çeviriyoruz. Gerekirse
+sonradan V1'in 5 GB'lık gerçek test setini ekleyebiliriz.
