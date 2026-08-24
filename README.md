@@ -84,10 +84,25 @@ notebooks/      Colab eğitim notebook'u
 tests/          feature extraction birim testleri
 ```
 
+## Sonuçlar (test seti, 115 görüntü)
+
+| IoU | Dice | Precision | Recall | Açı hatası (medyan) |
+|-----|------|-----------|--------|---------------------|
+| 0.63 | 0.77 | 0.82 | 0.74 | 9.2° |
+
+Detaylı değerlendirme, feature doğrulama ve **sistem sınırları** için [TESTING.md](TESTING.md).
+
 ## Örnek çıktı
 
-`outputs/data_check/features_montage.png` — GT maskeden çıkarılan geometrinin görüntü
-üzerine çizimi (maske overlay + pist sınırları + merkez hattı + threshold + açı).
+**Gerçek model çıktısı** (test görüntüleri, uçtan uca inference):
+
+![](assets/inference_examples.png)
+
+| Eğitim eğrileri | Failure örnekleri |
+|---|---|
+| ![](assets/training_curves.png) | ![](assets/failure_examples.png) |
+
+(Overlay: pist sınırları + merkez hattı + threshold + açı. Failure: GT yeşil, tahmin kırmızı.)
 
 ## Demo video
 

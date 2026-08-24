@@ -211,3 +211,23 @@ failure örüntüleri, Faz 5/7 canlı test, TESTING.md sayıları.
 hakkını kullanmıyoruz, metrik kovalamıyoruz. Kalan fazlara geçiyoruz.
 
 **Manuel (Beyza):** best.pt + history.json indirildi → outputs/ altına kondu.
+
+---
+
+## 2026-08-25 · Faz 6: değerlendirme + failure analizi  ⚠️ TASLAK (Beyza gözden geçirecek)
+
+**Test metrikleri (115 görüntü, görülmemiş sahneler):**
+IoU 0.631 · Dice 0.774 · precision 0.815 · recall 0.736. Val (0.68) > test (0.63) →
+scenario split çalışıyor, sızıntı yok, fark genelleme sınırını dürüst gösteriyor.
+
+**Feature doğrulama (GT köşe vs tahmin):** yaklaşma açısı medyan hatası **9.2°**
+(ort 16.5°; uç örnekler ortalamayı çekiyor). LARD'ın hazır köşe etiketi sayesinde nesnel.
+
+**Failure örüntüsü (net bulgu):** En kötü 12 tahminin **hepsi minik pist** (gt_px 71–370,
+görüntünün %0.007–0.035'i) ve **9'unda model hiçbir şey üretmedi**. Birleştirici faktör
+mesafe değil doğrudan **hedef boyutu** — pist birkaç piksele düşünce arka plandan
+ayrılamıyor. Baskın hata **yanlış negatif** (recall<precision): model ihtiyatlı, kaçırıyor.
+Bu, %0.17 dengesizlik ve Dice+BCE tercihiyle tam tutarlı.
+
+**Sonuç:** TESTING.md gerçek sayılarla yazıldı; sistem sınırları (uzak/minik pist, sentetik
+domain gap, az sahne) dürüstçe belgelendi. Teslim görselleri assets/ altında.
