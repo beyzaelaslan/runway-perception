@@ -169,3 +169,25 @@ sadece dosyayı koyup gerçek çıktı alacağız.
 bileşen bekliyor. Açma (gürültü) + kapama (delik) + en büyük bileşen (taxiway/yansıma eleme).
 
 **Sonuç:** Inference hazır. best.pt gelince test setinde 10-15 örnek koşulacak.
+
+---
+
+## 2026-08-25 · Faz 7/6/8: eğitim koşarken paralel iş  ⚠️ TASLAK (Beyza gözden geçirecek)
+
+Eğitim Colab'da dönerken (süre kısıtı) checkpoint gerektirmeyen parçaları paralel kurdum:
+
+- **Faz 7 — Streamlit (`app/main.py`):** tekil+toplu yükleme, maske overlay, geometri
+  çizimi, sayısal değerler (açı/köşe/threshold). checkpoint yoksa / pist bulunamazsa
+  graceful uyarı.
+- **Faz 6 — `evaluate.py`:** test metrikleri + **feature doğrulama** (GT maskeden vs tahmin
+  maskeden çıkarılan yaklaşma açısı hatası, derece) + en kötü N tahmini
+  `outputs/failures/`'a kaydetme + yanlış pozitif/negatif eğilimi. best.pt gelince koşulacak.
+- **Faz 8 — ARCHITECTURE.md + README.md:** katman diyagramı, çalıştırma komutları, veri
+  seti erişimi.
+
+**Neden feature doğrulamayı GT köşeleriyle yapıyoruz:** LARD zaten pistin 4 köşesini veriyor.
+Bu yüzden geometrimizi ground-truth ile nesnel karşılaştırabiliyoruz (çoğu adayın atladığı
+"özellikleri nasıl doğruladın" sorusunun cevabı).
+
+**Kalan (best.pt'e bağlı):** Faz 4 eğitim eğrileri/gözlemler, Faz 6 gerçek metrikler +
+failure örüntüleri, Faz 5/7 canlı test, TESTING.md sayıları.
