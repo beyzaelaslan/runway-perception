@@ -191,3 +191,23 @@ Bu yüzden geometrimizi ground-truth ile nesnel karşılaştırabiliyoruz (çoğ
 
 **Kalan (best.pt'e bağlı):** Faz 4 eğitim eğrileri/gözlemler, Faz 6 gerçek metrikler +
 failure örüntüleri, Faz 5/7 canlı test, TESTING.md sayıları.
+
+---
+
+## 2026-08-25 · Faz 4: eğitim sonucu (Colab, 25 epoch)  ⚠️ TASLAK (Beyza gözden geçirecek)
+
+**Gözlem (eğitim eğrilerinden):**
+- Loss: train ~0.08, val ~0.13'te oturdu; büyük düşüş epoch ~8-13, sonra plato.
+  train/val farkı küçük → **ciddi overfitting yok**, sağlıklı yakınsama.
+- Val metrikleri: **IoU ~0.66, Dice ~0.80** (tepe ~epoch 14). İlk epoch'larda zikzak
+  (küçük val seti + %0.17 sınıf dengesizliği + LR ısınması), 14'ten sonra stabil.
+
+**Yorum / dürüst sınır:**
+- Bu **val** sayısı ve **sentetik + az sahne** üzerinde → gerçek uçuşa genelleme daha düşük
+  olur (domain gap). Rapor edilecek asıl sayı test seti (evaluate.py).
+- Agregat metrik uzak-pist zayıflığını gizliyor; mesafeye göre kırılım evaluate.py'de.
+
+**Karar:** Sonuç MVP için tatmin edici → CLAUDE.md'deki "en fazla 1 kez yeniden eğit"
+hakkını kullanmıyoruz, metrik kovalamıyoruz. Kalan fazlara geçiyoruz.
+
+**Manuel (Beyza):** best.pt + history.json indirildi → outputs/ altına kondu.
