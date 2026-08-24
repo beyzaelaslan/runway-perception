@@ -151,3 +151,21 @@ Precision/recall hata tipini ayırır (taxiway'i pist sanma vs pisti kaçırma) 
 ile Colab GPU'da koşacak. Lokalde tam epoch ~10+ dk (CPU) → GPU şart olduğunu doğruladı.
 
 **Sonuç:** Altyapı hazır. **Manuel adım (Beyza):** notebook'u Colab'da koş, `best.pt` indir.
+
+---
+
+## 2026-08-25 · Faz 5: inference pipeline  ⚠️ TASLAK (Beyza gözden geçirecek)
+
+**Ne yaptım:** `predict.py` (RunwayPredictor) + `postprocess.py`. Uçtan uca:
+görüntü → model maskesi → morfolojik temizleme + en büyük bileşen → geometri → overlay.
+Tekil + toplu (klasör) çalışıyor; JPG/PNG doğrulaması, desteklenmeyen formatta anlamlı hata.
+
+**Zaman kısıtı kararı:** Eğitim Colab'da koşarken (4-5 saat kaldı) beklemek yerine inference
+katmanını paralel kurdum. Checkpoint henüz yokken pipeline mekaniğini **rastgele ağırlıklı
+dummy checkpoint** ile doğruladım (maske anlamsız ama akış hatasız çalıştı) → best.pt gelince
+sadece dosyayı koyup gerçek çıktı alacağız.
+
+**Post-processing gerekçesi:** Ham model maskesi gürültü/delik içerir; geometri tek temiz
+bileşen bekliyor. Açma (gürültü) + kapama (delik) + en büyük bileşen (taxiway/yansıma eleme).
+
+**Sonuç:** Inference hazır. best.pt gelince test setinde 10-15 örnek koşulacak.
