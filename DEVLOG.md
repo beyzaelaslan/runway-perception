@@ -231,3 +231,31 @@ Bu, %0.17 dengesizlik ve Dice+BCE tercihiyle tam tutarlı.
 
 **Sonuç:** TESTING.md gerçek sayılarla yazıldı; sistem sınırları (uzak/minik pist, sentetik
 domain gap, az sahne) dürüstçe belgelendi. Teslim görselleri assets/ altında.
+
+---
+
+## 2026-08-26 · Kapanış: zaman & baştan başlasam  ⚠️ TASLAK (Beyza kendi cümleleriyle zenginleştirecek)
+
+**Zamanı nasıl harcadım:**
+En çok zaman **veri katmanı kararlarına** gitti — bunların çoğu araştırma/keşifti:
+LARD'ın maske değil köşe verdiğini fark etmek, V1'in devasa boyutunu görüp V2'ye dönmek,
+streaming'in çökmesi üzerine shard indirmeye geçmek, 20 sahne bulunca scenario bazlı
+split'e karar vermek. İkinci büyük dilim **feature extraction'ı sağlamlaştırmak** oldu
+(minAreaRect'in yakında kırılması → satır-bazlı fit). Eğitim altyapısını yazdıktan sonra
+asıl eğitimi Colab'a atıp, o **arka planda dönerken** inference, arayüz, değerlendirme kodu
+ve dokümanları paralel yürüttüm — böylece GPU beklerken boş durmadım. En sonda gerçek
+`best.pt` ile değerlendirme + failure analizi + TESTING'i tamamladım.
+
+Önemli bir zaman kısıtı: donanımım (Intel Mac, GPU yok) yüzünden lokalde eğitim ~6 saat
+sürerdi; bu yüzden eğitimi Colab'a taşımak ve kalan her şeyi ona paralel kurmak bilinçli
+bir zaman yönetimi kararıydı.
+
+**Baştan başlasam neyi farklı yapardım:**
+- **Daha çok sahne çeşitliliği:** Config başına tek shard yerine birkaç shard indirip
+  20'den fazla havaalanı kapsardım; test seti daha temsili olurdu.
+- **Uzak/minik pisti baştan ciddiye alırdım:** En büyük zayıflık bu. Daha yüksek çözünürlük,
+  tiling veya minik-nesne odaklı loss (Tversky/Focal) ile başlardım.
+- **Domain gap'i sayısal ölçmek:** V2 sentetik-only olduğu için, LARD'ın gerçek test
+  görüntülerini erken ekleyip sentetik→gerçek düşüşü rakamla gösterirdim.
+- **Değerlendirmeyi daha erken kurardım:** evaluate.py'yi eğitimden önce iskelet olarak
+  hazırlasaydım, checkpoint gelir gelmez failure analizine daha çok zaman kalırdı.
