@@ -5,6 +5,9 @@ TASKS.md
 # --- Case study dokümanı (TUSAŞ iç belgesi — public repoya girmez) ---
 docs/
 
+# --- Ham ekran kaydı (büyük, GitHub 100MB limitini aşar) — sıkıştırılmış demo.mp4 push edilir
+demo_video/*.mov
+
 # --- Veri ve çıktılar (repoya girmez) ---
 # Not: başında / var → sadece kök dizini eşler, src/data paketini etkilemez.
 /data/

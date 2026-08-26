@@ -106,5 +106,6 @@ Detaylı değerlendirme, feature doğrulama ve **sistem sınırları** için [TE
 
 ## Demo video
 
-<!-- TODO: video linki -->
+Sistemi tanıtan ~4 dk'lık demo: [`demo_video/demo.mp4`](demo_video/demo.mp4)
+(problem → mimari → canlı demo → metrikler → sistem sınırları).
 ```
